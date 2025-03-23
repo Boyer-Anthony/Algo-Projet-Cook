@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     public Camera cam;
     public NavMeshAgent agent;
     public GameObject Cursor;
+    public LayerMask Ground;
 
     private Vector3 targetCursor;  
     private Stack<GameObject> pile = new Stack<GameObject>();
@@ -21,10 +22,11 @@ public class PlayerController : MonoBehaviour
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
+            
            
             
-
-            if (Physics.Raycast(ray, out hit))
+            // Si le raycast touche un gameboject avec le layer Ground, afin d'éviter de pouvoir mettre le cursor sur les Mur
+            if (Physics.Raycast(ray, out hit, 1000f, Ground))
             {
 
                 
