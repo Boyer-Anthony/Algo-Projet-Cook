@@ -21,7 +21,7 @@ public class ClientScript : MonoBehaviour
         {
             // Chemin vers la couleur du renderer du gameObject Client
             originalColor = clientRenderer.material.color;
-            //StartCoroutine(FadeOut());
+           
         }
     }
 
@@ -51,21 +51,27 @@ public class ClientScript : MonoBehaviour
         yield return new WaitForSeconds(10f); // Attend avant de commencer le fondu.
 
         // Tant que l'alpha du material est supérieur à 0
-        while (originalColor.a > 0)
+        while (alpha > 0)
         {
             alpha -= fadeSpeed * Time.deltaTime;
+
+            // S'assurer que l'alpha ne descend pas en dessous de 0
             alpha = Mathf.Clamp(alpha, 0, 1);
+
+            // Mise à jour du rendu avec la nouvelle valeur alpha
             clientRenderer.material.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+
+            // Attendre la prochaine frame
             yield return null;
 
 
-            Debug.Log($"Fondu en cours... Alpha = {alpha}");
+            //Debug.Log($"Fondu en cours... Alpha = {alpha}");
 
 
         }
 
         Debug.Log("Destroy");
-        Destroy(gameObject, 0.5f); // Détruire le Client
+        Destroy(gameObject); // Détruire le Client
         
 
 

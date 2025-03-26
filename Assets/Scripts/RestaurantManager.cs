@@ -8,6 +8,7 @@ public class RestaurantManager : MonoBehaviour
     // Déclarations des variables 
     public GameObject clientPrefabs; // Référence au prefab client
     public Transform spawnPosition; // Positions ou les clients spawneront
+    public int clientCompteur;     // Compteur de client
     public float spawnInterval = 3f;
     private GameObject client;
 
@@ -54,21 +55,31 @@ public class RestaurantManager : MonoBehaviour
     // Coroutine qui génère le spawn des client tous les X temps
     private IEnumerator SpawnClient()
     {
-        while (clientResto.Count <= 5)
+        while (clientResto.Count < 3)//&& !tablesOccuper.ContainsKey(gameObject))
         {
             yield return new  WaitForSeconds(spawnInterval);
-            AddClientFile();
+            
+              
+                AddClientFile();
+
+                Debug.Log($"Nombre de clients dans le restaurant : {clientResto.Count}");
+            
+            
         }
+
+        Debug.Log("Arrêt du spawn : Limite atteinte");
     }
 
     // Ajout un client dans la file d'attente
     private void AddClientFile()
     {
         // Instanciation du client dans la zone spawnPosition
-        int i = 1;
         GameObject newClient = Instantiate(clientPrefabs, spawnPosition.position, Quaternion.identity);
-       
-        newClient.name = "Client " + i++;
+
+        newClient.name = $"client {clientCompteur}";
+
+        // Incrément de 1 lors du prochain client
+        clientCompteur++;
 
         // File indienne
         Vector3 positionFile = spawnPosition.position + new Vector3(fileAttente.Count * 2, 0, 0); 
@@ -149,6 +160,11 @@ public class RestaurantManager : MonoBehaviour
                 // Libérer une table et retirer du dictionnaire
                 tablesOccuper.Remove(table, out client);
                 Debug.Log($"{table.name} est occupée par {client.name} est libérer");
+
+                // Retirer le client de la liste "clientResto"
+                clientResto.Remove(client);
+
+                StartCoroutine(SpawnClient());
                 return;
             }
         }
