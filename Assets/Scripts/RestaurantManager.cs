@@ -43,6 +43,12 @@ public class RestaurantManager : MonoBehaviour
             
             ClientComing();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("A");
+            ServirUnClient();
+        }
     }
 
     // Coroutine qui génère le spawn des client tous les X temps
@@ -122,4 +128,29 @@ public class RestaurantManager : MonoBehaviour
 
     }
 
+    // Servir le Client une fois installer
+    private void ServirUnClient()
+    {
+        // Cherche une table dans le dictionnaire tablesOccuper
+        foreach (GameObject table in tablesOccuper.Keys)
+        {
+            Debug.Log("Je cherche");
+            client = tablesOccuper[table];
+
+            ClientScript clientScript = client.GetComponent<ClientScript>();
+
+            // Si clientScript est différent de null et que le client n'est pas servi
+            if (clientScript != null && !clientScript.isServe)
+            {
+                Debug.Log("Servir");
+                // Servir le client
+                clientScript.Servir();
+
+                // Libérer une table et retirer du dictionnaire
+                tablesOccuper.Remove(table, out client);
+                Debug.Log($"{table.name} est occupée par {client.name} est libérer");
+                return;
+            }
+        }
+    }
 }
